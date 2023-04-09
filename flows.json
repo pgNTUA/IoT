@@ -1,0 +1,1202 @@
+[
+    {
+        "id": "697d5150f7f34a0e",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "5464546d16e48255",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f63ed1f99864bbc1",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "ba6a05a0beecd6d7",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a4667def94f4e863",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a90ee92d3526ec3d",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "test",
+        "name": ""
+    },
+    {
+        "id": "b79caf50211de005",
+        "type": "debug",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "c95f85283b1ef3f5",
+        "type": "mqtt out",
+        "z": "697d5150f7f34a0e",
+        "name": "timestamp",
+        "topic": "test",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a4667def94f4e863",
+        "x": 770,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "56b9f9f4f678fb01",
+        "type": "http in",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "url": "/pub/:topic/:payload",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "9aeaee4c7be1aa47"
+            ]
+        ]
+    },
+    {
+        "id": "9aeaee4c7be1aa47",
+        "type": "function",
+        "z": "697d5150f7f34a0e",
+        "name": "message_pub",
+        "func": "msg.topic = msg.req.params.topic.toString();\nmsg.payload = msg.req.params.payload.toString();\nmsg.qos = 2;\nmsg.retain = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 540,
+        "wires": [
+            [
+                "c95f85283b1ef3f5",
+                "6e74bc62cb64477e"
+            ]
+        ]
+    },
+    {
+        "id": "e322955fd59a678c",
+        "type": "http response",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 830,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "6e74bc62cb64477e",
+        "type": "function",
+        "z": "697d5150f7f34a0e",
+        "name": "http_pub",
+        "func": "msg.payload = {\n    success: true,\n    message: \"published \" + msg.req.params.topic + \"/\" +msg.req.params.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 600,
+        "wires": [
+            [
+                "e322955fd59a678c"
+            ]
+        ]
+    },
+    {
+        "id": "c23a7b143f180cd7",
+        "type": "mqtt in",
+        "z": "697d5150f7f34a0e",
+        "name": "listen-everything",
+        "topic": "test",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "a4667def94f4e863",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 120,
+        "y": 300,
+        "wires": [
+            [
+                "c2399d04013d8793",
+                "3366395bbb50e76c",
+                "db1222179e44c978"
+            ]
+        ]
+    },
+    {
+        "id": "c1484dd765c440b7",
+        "type": "mongodb out",
+        "z": "697d5150f7f34a0e",
+        "mongodb": "a90ee92d3526ec3d",
+        "name": "",
+        "collection": "books",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 1060,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "99de396b922d16aa",
+        "type": "function-npm",
+        "z": "697d5150f7f34a0e",
+        "name": "find_rules",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        str1 = msg.topic;\n        str2 = msg.payload;\n        await findRules(client, str1,str2).then(\n  function(value) {apomesa=value; msg.payload = apomesa},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findRules(client, nameofListing,nameofFisting) {\n    var mesamesa='';\n    //console.log(`Found listing(s):`);\n    const cursor = await client.db(\"test\").collection(\"rules\").find({ topicpattern: new RegExp(nameofListing) , payloadpattern:new RegExp(nameofFisting),active:true });\n    const results = await cursor.toArray();\n    if (results.length > 0) {\n        //console.log(`Found listing(s):`);\n        results.forEach((result, i) => {\n            msg.method=result.method;\n            console.log(result.webhook);\n            msg.url=result.webhook;\n            node.send([msg]);\n        }\n        );\n    } else {\n        console.log(`No listings found`);\n        mesamesa += `No listings found` + '<p>';\n    }\n    return mesamesa;\n}\n\nmain();\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 340,
+        "wires": [
+            [
+                "6f1318d8659075b3"
+            ]
+        ]
+    },
+    {
+        "id": "c2399d04013d8793",
+        "type": "function",
+        "z": "697d5150f7f34a0e",
+        "name": "edit",
+        "func": "var array=msg.payload.split(\",\")\nif(array.length==2) {\nfor (i=0;i<array.length;i++){\n    if (array[i].split(\":\")[0]=='topic') msg.topic=array[i].split(\":\")[1].replace(/[']+/g,'');\n    if (array[i].split(\":\")[0]=='payloadpattern') msg.payload=array[i].split(\":\")[1].replace(/[']+/g,'');\n}\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 380,
+        "wires": [
+            [
+                "99de396b922d16aa",
+                "b79caf50211de005"
+            ]
+        ]
+    },
+    {
+        "id": "6f1318d8659075b3",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 690,
+        "y": 360,
+        "wires": [
+            [
+                "b79caf50211de005"
+            ]
+        ]
+    },
+    {
+        "id": "3366395bbb50e76c",
+        "type": "switch",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "show",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "en",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "dis",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "time",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "a75ba71ea2fa9764"
+            ],
+            [
+                "c1f06a38c1f58e5d"
+            ],
+            [
+                "ba3eddf7a6c7f416"
+            ],
+            [
+                "3ad595e83e381761"
+            ],
+            [
+                "cc8380eb20bc7a13"
+            ]
+        ]
+    },
+    {
+        "id": "a75ba71ea2fa9764",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:1880/get/topic/test/payload/b/last/4",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 60,
+        "wires": [
+            [
+                "196086a32fa2c70c"
+            ]
+        ]
+    },
+    {
+        "id": "c1f06a38c1f58e5d",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:1880/rules/enableall",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 120,
+        "wires": [
+            [
+                "196086a32fa2c70c"
+            ]
+        ]
+    },
+    {
+        "id": "ba3eddf7a6c7f416",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:1880/rules/disableAll",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [
+                "196086a32fa2c70c"
+            ]
+        ]
+    },
+    {
+        "id": "3ad595e83e381761",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:1880/timestamp",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 220,
+        "wires": [
+            [
+                "196086a32fa2c70c"
+            ]
+        ]
+    },
+    {
+        "id": "cc8380eb20bc7a13",
+        "type": "http request",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:1880/randomcode/24",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 280,
+        "wires": [
+            [
+                "196086a32fa2c70c"
+            ]
+        ]
+    },
+    {
+        "id": "196086a32fa2c70c",
+        "type": "debug",
+        "z": "697d5150f7f34a0e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "1c30287874e91990",
+        "type": "http in",
+        "z": "5464546d16e48255",
+        "name": "",
+        "url": "/rules/enable/:id",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [
+                "d7fc328dc9dda3aa"
+            ]
+        ]
+    },
+    {
+        "id": "0f990b356bf91e29",
+        "type": "http response",
+        "z": "5464546d16e48255",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 670,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d7fc328dc9dda3aa",
+        "type": "function-npm",
+        "z": "5464546d16e48255",
+        "name": "rule_active",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        str = msg.req.params.id;\n        await ruleSwitch(client, str).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function ruleSwitch(client, id) {\n    var mesamesa='';\n    const cursor = await client.db(\"test\").collection(\"rules\").update({ rulename: id },{$set:{active:true}});\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.modifiedCount} rule(s) enabled.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "0f990b356bf91e29"
+            ]
+        ]
+    },
+    {
+        "id": "0eb2d48d029c70fc",
+        "type": "http in",
+        "z": "5464546d16e48255",
+        "name": "",
+        "url": "/rules/disable/:id",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "81fdea417b3e8b24"
+            ]
+        ]
+    },
+    {
+        "id": "81fdea417b3e8b24",
+        "type": "function-npm",
+        "z": "5464546d16e48255",
+        "name": "rule_inactive",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        str = msg.req.params.id;\n        await ruleSwitch(client, str).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function ruleSwitch(client, id) {\n    var mesamesa='';\n    const cursor = await client.db(\"test\").collection(\"rules\").update({ rulename: id },{$set:{active:false}});\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.modifiedCount} rule(s) disabled.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "0f990b356bf91e29"
+            ]
+        ]
+    },
+    {
+        "id": "65c13a6032f14c8d",
+        "type": "http in",
+        "z": "5464546d16e48255",
+        "name": "",
+        "url": "/rules/enableAll",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 240,
+        "wires": [
+            [
+                "8bf209f60df6d825"
+            ]
+        ]
+    },
+    {
+        "id": "9611561401d56f47",
+        "type": "http response",
+        "z": "5464546d16e48255",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 650,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "8bf209f60df6d825",
+        "type": "function-npm",
+        "z": "5464546d16e48255",
+        "name": "enable_rules",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        str = msg.req.params.id;\n        await ruleSwitch(client, str).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function ruleSwitch(client, id) {\n    var mesamesa='';\n    const cursor = await client.db(\"test\").collection(\"rules\").update({ },{$set:{active:true}});\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.modifiedCount} rule(s) enabled.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 446,
+        "y": 250,
+        "wires": [
+            [
+                "9611561401d56f47"
+            ]
+        ]
+    },
+    {
+        "id": "ad1214f59ae61e9a",
+        "type": "http in",
+        "z": "5464546d16e48255",
+        "name": "",
+        "url": "/rules/disableAll",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 340,
+        "wires": [
+            [
+                "17418e0921aa2708"
+            ]
+        ]
+    },
+    {
+        "id": "17418e0921aa2708",
+        "type": "function-npm",
+        "z": "5464546d16e48255",
+        "name": "disable_rules",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        str = msg.req.params.id;\n        await ruleSwitch(client, str).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function ruleSwitch(client, id) {\n    var mesamesa='';\n    const cursor = await client.db(\"test\").collection(\"rules\").update({  },{$set:{active:false}});\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.modifiedCount} rule(s) disabled.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 343,
+        "wires": [
+            [
+                "9611561401d56f47"
+            ]
+        ]
+    },
+    {
+        "id": "31ae9889d29f54d1",
+        "type": "http in",
+        "z": "5464546d16e48255",
+        "name": "",
+        "url": "/rules/add/:rulename",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 440,
+        "wires": [
+            [
+                "1d357d689c686673"
+            ]
+        ]
+    },
+    {
+        "id": "1d357d689c686673",
+        "type": "function-npm",
+        "z": "5464546d16e48255",
+        "name": "new_rule",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/test?authSource=test'\nconst databaseName = 'test'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        name = msg.req.params.rulename;\n        topicpattern=msg.req.body.topicpattern;\n        payloadpattern=msg.req.body.payloadpattern;\n        method=msg.req.body.method;\n        webhook=msg.req.body.webhook;\n        await newrule(client, name,topicpattern,payloadpattern,method,webhook).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function newrule(client, name,topic,payload,meth,hook) {\n    var mesamesa='';\n    const cursor = await client.db(\"test\").collection(\"rules\").insert({ rulename : name , topicpattern:topic, payloadpattern: payload, method: meth, webhook: hook });\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.insertedCount} inserted.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 440,
+        "wires": [
+            [
+                "19c8700ec51f86f7"
+            ]
+        ]
+    },
+    {
+        "id": "19c8700ec51f86f7",
+        "type": "http response",
+        "z": "5464546d16e48255",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 670,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "d312d9297945f215",
+        "type": "mqtt out",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "topic": "post",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a4667def94f4e863",
+        "x": 510,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "4bf34ed2b2e35708",
+        "type": "http in",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "url": "/fan/:mode",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 40,
+        "wires": [
+            [
+                "5bf0ab3b02ad8b87"
+            ]
+        ]
+    },
+    {
+        "id": "5bf0ab3b02ad8b87",
+        "type": "function",
+        "z": "f63ed1f99864bbc1",
+        "name": "fan_mode",
+        "func": "if (msg.req.params.mode==\"on\")\nmsg.payload='fan.activate()';\nelse msg.payload='fan.deactivate()';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 40,
+        "wires": [
+            [
+                "d312d9297945f215",
+                "e82b4c42895e4418"
+            ]
+        ]
+    },
+    {
+        "id": "e82b4c42895e4418",
+        "type": "http response",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 490,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "54669e907ab57b7e",
+        "type": "mqtt out",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "topic": "post",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a4667def94f4e863",
+        "x": 510,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "ea4133615deec360",
+        "type": "http in",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "url": "/sliders/:mode",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "a05f943b42055ffc"
+            ]
+        ]
+    },
+    {
+        "id": "a05f943b42055ffc",
+        "type": "function",
+        "z": "f63ed1f99864bbc1",
+        "name": "sliders_mode",
+        "func": "if (msg.req.params.mode==\"on\")\nmsg.payload='sliders.activate()';\nelse msg.payload='sliders.deactivate()';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "54669e907ab57b7e",
+                "8bb3e1aec965f9ab"
+            ]
+        ]
+    },
+    {
+        "id": "8bb3e1aec965f9ab",
+        "type": "http response",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 490,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c2e67c822a51aaa7",
+        "type": "mqtt out",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "topic": "post",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a4667def94f4e863",
+        "x": 490,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "f0eed1c736231f28",
+        "type": "http in",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "url": "/shades/:mode",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "dcf6047f060805ad"
+            ]
+        ]
+    },
+    {
+        "id": "dcf6047f060805ad",
+        "type": "function",
+        "z": "f63ed1f99864bbc1",
+        "name": "shades_mode",
+        "func": "if (msg.req.params.mode==\"on\")\nmsg.payload='shaders.activate()';\nelse msg.payload='shaders.deactivate()';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 300,
+        "wires": [
+            [
+                "c2e67c822a51aaa7",
+                "776274674b5738f6"
+            ]
+        ]
+    },
+    {
+        "id": "776274674b5738f6",
+        "type": "http response",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 470,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b42a1e35afd330f2",
+        "type": "mqtt out",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "topic": "post",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a4667def94f4e863",
+        "x": 450,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "4b8807b71f47f9d8",
+        "type": "http in",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "url": "/hone",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 400,
+        "wires": [
+            [
+                "cb90c5893fa13a43"
+            ]
+        ]
+    },
+    {
+        "id": "cb90c5893fa13a43",
+        "type": "function",
+        "z": "f63ed1f99864bbc1",
+        "name": "hone",
+        "func": "msg.payload='meaningless_text()';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 440,
+        "wires": [
+            [
+                "b42a1e35afd330f2",
+                "64082b8002ee7ece"
+            ]
+        ]
+    },
+    {
+        "id": "64082b8002ee7ece",
+        "type": "http response",
+        "z": "f63ed1f99864bbc1",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 430,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "db1222179e44c978",
+        "type": "function-npm",
+        "z": "697d5150f7f34a0e",
+        "name": "mqtt_listener",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        p = parseFloat(msg.payload);\n        await findListingByName(client, p).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findListingByName(client, p) {\n    var mesamesa='';\n    const d = new Date();\n    const doc = {\n      date: d.toJSON(),\n      pressure: p,\n      type: 2\n    }\n    const cursor = await client.db(\"weather\").collection(\"newdata\").insertOne(doc);\n    const results = await cursor.toArray();\n    return p;\n}\n\nmain();",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 460,
+        "wires": [
+            [
+                "b79caf50211de005"
+            ]
+        ]
+    },
+    {
+        "id": "5c30c5097c059cba",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/get/type/:type/below/:lim/last/:count",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "6cc76179cf002eca"
+            ]
+        ]
+    },
+    {
+        "id": "6cc76179cf002eca",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "get_below",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        type = parseInt(msg.req.params.type);\n        p = parseFloat(msg.req.params.lim);\n        lim = parseInt(msg.req.params.count);\n        await findListingByDate(client, type,p,lim).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findListingByDate(client, typelike,endp,l) {\n    var mesamesa='';\n    const cursor = await client.db(\"weather\").collection(\"newdata\").find({ type: typelike , temperature: { $lte: endp } }).limit(l);\n    const results = await cursor.toArray();\n    if (results.length > 0) {\n        //console.log(`Found listing(s):`);\n        results.forEach((result, i) => {\n            mesamesa += `${i + 1}. _id: ${result._id}` + '<br>';\n            //console.log(`${i + 1}. name: ${result.title}`);\n            //console.log(`   _id: ${result._id}`);\n             mesamesa += `   date: ${result.date}` + '<br>';\n             \n             \n            //console.log(`   year: ${result.year}`);\n             mesamesa += `   temperature: ${result.temperature}` + '<br>';\n             \n             mesamesa += `   type: ${result.type}` + '<br>';\n            //console.log(`   issues: ${result.issues}`);\n             //mesamesa += `   topic: ${result.topic}` + '<p>';\n            //console.log(`   topic: ${result.topic}`);\n        }\n        );\n    } else {\n        console.log(`No listings found`);\n        mesamesa += `No listings found` + '<p>';\n    }\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 120,
+        "wires": [
+            [
+                "259a4e9e394c17a1"
+            ]
+        ]
+    },
+    {
+        "id": "259a4e9e394c17a1",
+        "type": "http response",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 790,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "5b6c2a5a59e3c9aa",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/get/type/:type/above/:lim/last/:count",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "ce7caddd13ae3a55"
+            ]
+        ]
+    },
+    {
+        "id": "7fcfda7c5b02382b",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/get/type/:type/between/:ll/:ul/last/:count",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 230,
+        "y": 300,
+        "wires": [
+            [
+                "77b5498a9e3c5694"
+            ]
+        ]
+    },
+    {
+        "id": "ce7caddd13ae3a55",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "get_above",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        type = parseInt(msg.req.params.type);\n        p = parseFloat(msg.req.params.lim);\n        lim = parseInt(msg.req.params.count);\n        await findListingByDate(client, type,p,lim).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findListingByDate(client, typelike,endp,l) {\n    var mesamesa='';\n    const cursor = await client.db(\"weather\").collection(\"newdata\").find({ type: typelike , temperature: { $gte: endp } }).limit(l);\n    const results = await cursor.toArray();\n    if (results.length > 0) {\n        //console.log(`Found listing(s):`);\n        results.forEach((result, i) => {\n            mesamesa += `${i + 1}. _id: ${result._id}` + '<br>';\n            //console.log(`${i + 1}. name: ${result.title}`);\n            //console.log(`   _id: ${result._id}`);\n             mesamesa += `   date: ${result.date}` + '<br>';\n             \n             \n            //console.log(`   year: ${result.year}`);\n             mesamesa += `   temperature: ${result.temperature}` + '<br>';\n             \n             mesamesa += `   type: ${result.type}` + '<br>';\n            //console.log(`   issues: ${result.issues}`);\n             //mesamesa += `   topic: ${result.topic}` + '<p>';\n            //console.log(`   topic: ${result.topic}`);\n        }\n        );\n    } else {\n        console.log(`No listings found`);\n        mesamesa += `No listings found` + '<p>';\n    }\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 220,
+        "wires": [
+            [
+                "259a4e9e394c17a1"
+            ]
+        ]
+    },
+    {
+        "id": "77b5498a9e3c5694",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "get_between",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        type = parseInt(msg.req.params.type);\n        p1 = parseFloat(msg.req.params.ll);\n        p2=parseFloat(msg.req.params.ul);\n        lim = parseInt(msg.req.params.count);\n        await findListingByDate(client, type,p1,p2,lim).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findListingByDate(client, typelike,p1,p2,l) {\n    var mesamesa='';\n    const cursor = await client.db(\"weather\").collection(\"newdata\").find({ type: typelike , temperature: { $lte: p2 },temperature:{$gte: p1} }).limit(l);\n    const results = await cursor.toArray();\n    if (results.length > 0) {\n        //console.log(`Found listing(s):`);\n        results.forEach((result, i) => {\n            mesamesa += `${i + 1}. _id: ${result._id}` + '<br>';\n            //console.log(`${i + 1}. name: ${result.title}`);\n            //console.log(`   _id: ${result._id}`);\n             mesamesa += `   date: ${result.date}` + '<br>';\n             \n             \n            //console.log(`   year: ${result.year}`);\n             mesamesa += `   temperature: ${result.temperature}` + '<br>';\n             \n             mesamesa += `   type: ${result.type}` + '<br>';\n            //console.log(`   issues: ${result.issues}`);\n             //mesamesa += `   topic: ${result.topic}` + '<p>';\n            //console.log(`   topic: ${result.topic}`);\n        }\n        );\n    } else {\n        console.log(`No listings found`);\n        mesamesa += `No listings found` + '<p>';\n    }\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 551,
+        "y": 301,
+        "wires": [
+            [
+                "259a4e9e394c17a1"
+            ]
+        ]
+    },
+    {
+        "id": "9ad51c0a89ea0ec5",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/purge/type/:type/:p",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 480,
+        "wires": [
+            [
+                "b2c15e189b40643d"
+            ]
+        ]
+    },
+    {
+        "id": "b2c15e189b40643d",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "purge",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        type = parseInt(msg.req.params.type);\n        p = parseFloat(msg.req.params.limit);\n        await findListingByDate(client, type,p).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\n\n\nasync function findListingByDate(client, typelike,p) {\n    var mesamesa='';\n    const cursor = await client.db(\"weather\").collection(\"newdata\").remove({ type: typelike , temperature:{$lte:p} });\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.deletedCount} document(s) deleted.`;\n    return mesamesa;\n}\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 480,
+        "wires": [
+            [
+                "450d9ebcefe596af"
+            ]
+        ]
+    },
+    {
+        "id": "450d9ebcefe596af",
+        "type": "http response",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 810,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3e31600992b842c4",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/timestamp",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "6fa00b6c27c5518b"
+            ]
+        ]
+    },
+    {
+        "id": "6fa00b6c27c5518b",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "timestamp",
+        "func": "msg.payload = {\n    timestamp: (new Date()).getTime().toString()\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 600,
+        "wires": [
+            [
+                "8454cfa3f861a7db"
+            ]
+        ]
+    },
+    {
+        "id": "8454cfa3f861a7db",
+        "type": "http response",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 710,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "a0d0d1ed957d2501",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/update/type/:type/:p1/:p2",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 400,
+        "wires": [
+            [
+                "af83bac3496552bc"
+            ]
+        ]
+    },
+    {
+        "id": "af83bac3496552bc",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "update",
+        "func": "async function main(){\n    var apomesa='';\nconst mongodb = require('mongodb')\nconst MongoClient = mongodb.MongoClient\n\n\nconst connectionURL = 'mongodb://myTester:123456@127.0.0.1:27017/weather?authSource=test'\nconst databaseName = 'weather'\nconst client = new MongoClient(connectionURL);\ntry {\n        // Connect to the MongoDB cluster\n        await client.connect();\n \n        // Make the appropriate DB calls\n        type = parseInt(msg.req.params.type);\n        p1 = parseFloat(msg.req.params.p1);\n        p2=parseFloat(msg.req.params.p2);\n        await findListingByDate(client, type,p1,p2).then(\n  function(value) {apomesa=value; msg.payload = apomesa; node.send( msg );},\n  function(error) {apomesa=error;}\n);\n\n        //myPromise.then((result) => console.log(result)).catch((result) => console.log(result));\n    } catch (e) {\n        console.error(e);\n    } \n    finally {\n        await client.close();\n    }\n\n\n}\nasync function findListingByDate(client, typelike,p1,p2) {\n    var mesamesa='';\n    const cursor = await client.db(\"weather\").collection(\"newdata\").update({ type: typelike , temperature:{$gte:p1} },{$set:{temperature:p2}});\n    //const results = await cursor.toArray();\n    mesamesa=`${cursor.modifiedCount} document(s) updated.`;\n    return mesamesa;\n}\n\n\nmain();\n\n/*\nMongoClient.connect(connectionURL, function(err, db) {\n\n    //var cursor = db.collection('books').find();\n\n    console.log(\"CONNECTED\");\n    var cursor = db.collection('books').find();\n\n    cursor.each(function(err, doc) {\n\n        console.log(doc);\n\n    });\n    db.close();\n}); \n\nreturn msg; */",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 400,
+        "wires": [
+            [
+                "d47440cbcbf6ac98"
+            ]
+        ]
+    },
+    {
+        "id": "d47440cbcbf6ac98",
+        "type": "http response",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 710,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "255187452b34da62",
+        "type": "http in",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "url": "/randomcode/:len",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 540,
+        "wires": [
+            [
+                "44572bd4b3ff8cb6"
+            ]
+        ]
+    },
+    {
+        "id": "44572bd4b3ff8cb6",
+        "type": "function-npm",
+        "z": "ba6a05a0beecd6d7",
+        "name": "random_code",
+        "func": "var randomString = function(length) {\n    var text = \"\";\n    var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";\n    for(var i = 0; i < length; i++) {\n        text += possible.charAt(Math.floor(Math.random() *possible.length));\n    }\n    return text;\n}\n//  msg.headers={};\n//  msg.headers[\"Access-Control-Allow-Credentials\"]=\"true\";\n//  msg.headers[\"Access-Control-Allow-Origin\"]=\"http://localhost:3000\";\n//  msg.headers[\"Access-Control-Allow-Methods\"]=\"POST,GET,OPTIONS\";\nmsg.payload = {\n    code: randomString(msg.req.params.len)\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 540,
+        "wires": [
+            [
+                "495efbb0f5a787af"
+            ]
+        ]
+    },
+    {
+        "id": "495efbb0f5a787af",
+        "type": "http response",
+        "z": "ba6a05a0beecd6d7",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 540,
+        "wires": []
+    }
+]

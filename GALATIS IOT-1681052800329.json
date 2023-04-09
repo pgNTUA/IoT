@@ -1,0 +1,438 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_MONGODB",
+      "label": "MongoDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "grafana-mongodb-datasource",
+      "pluginName": "MongoDB"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "cloudspout-button-panel",
+      "name": "Button Panel",
+      "version": "7.0.23"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.1.6"
+    },
+    {
+      "type": "datasource",
+      "id": "grafana-mongodb-datasource",
+      "name": "MongoDB",
+      "version": "0.8.1"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 10,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 980
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.newdata.aggregate([{ \"$group\": { \"_id\": \"$date\", \"temperature\": { \"$avg\": \"$temperature\" } } }, { \"$project\": { \"_id\": 0, \"time\": \"$_id\", \"temperature\": \"$temperature\" } }, {\"$sort\":{\"time\":1}}])",
+          "type": "table"
+        }
+      ],
+      "title": "TEMPERATURE AGGREGATION",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 12,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "contentType": "application/json",
+        "icon": "unlock",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "TURN FAN ON",
+        "type": "header",
+        "url": "http://localhost:1880/fan/on",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 17,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "contentType": "application/json",
+        "icon": "unlock",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "TURN FAN OFF",
+        "type": "header",
+        "url": "http://localhost:1880/fan/off",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 12,
+        "y": 2
+      },
+      "id": 10,
+      "options": {
+        "contentType": "application/json",
+        "icon": "bolt",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "SLIDERS ON",
+        "type": "header",
+        "url": "http://localhost:1880/sliders/on",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 17,
+        "y": 2
+      },
+      "id": 14,
+      "options": {
+        "contentType": "application/json",
+        "icon": "bolt",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "SLIDERS OFF",
+        "type": "header",
+        "url": "http://localhost:1880/sliders/off",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 12,
+        "y": 4
+      },
+      "id": 8,
+      "options": {
+        "contentType": "application/json",
+        "icon": "cog",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "SHADES ON",
+        "type": "header",
+        "url": "http://localhost:1880/shaders/on",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 17,
+        "y": 4
+      },
+      "id": 15,
+      "options": {
+        "contentType": "application/json",
+        "icon": "cog",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "SHADES OFF",
+        "type": "header",
+        "url": "http://localhost:1880/shaders/off",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-datasource",
+        "uid": "${DS_MONGODB}"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 15,
+        "y": 6
+      },
+      "id": 12,
+      "options": {
+        "contentType": "application/json",
+        "icon": "edit",
+        "isAuth": false,
+        "method": "GET",
+        "orientation": "center",
+        "text": "HOME",
+        "type": "header",
+        "url": "http://localhost:1880/hone",
+        "variant": "primary"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mongodb-datasource",
+            "uid": "${DS_MONGODB}"
+          },
+          "rawQuery": true,
+          "refId": "A",
+          "target": "select metric",
+          "type": "timeserie"
+        }
+      ],
+      "type": "cloudspout-button-panel"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "2023-03-26T20:00:22.426Z",
+    "to": "2023-03-26T20:06:22.813Z"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "GALATIS IOT",
+  "uid": "p-Aa3dvnz",
+  "version": 37,
+  "weekStart": ""
+}
